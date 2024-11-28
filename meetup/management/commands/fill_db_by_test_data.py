@@ -99,5 +99,5 @@ class Command(BaseCommand):
                 )
 
             self.stdout.write(self.style.SUCCESS(
-                'База данный заполнена тестовыми данными.'
+                'База данных заполнена тестовыми данными.'
             ))

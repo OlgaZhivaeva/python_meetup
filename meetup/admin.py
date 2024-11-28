@@ -25,7 +25,7 @@ class SpeechAdmin(admin.ModelAdmin):
 
 
 @admin.register(Participant)
-class GuestAdmin(admin.ModelAdmin):
+class ParticipantAdmin(admin.ModelAdmin):
     list_display = [
         'tg_id',
         'full_name'
