@@ -21,7 +21,7 @@ class Participant(models.Model):
         verbose_name='Время заполнения',
         auto_now_add=True,
     )
-    stak = models.CharField(
+    stack = models.CharField(
         verbose_name='Стек',
         max_length=100,
     )
@@ -35,7 +35,7 @@ class Participant(models.Model):
         verbose_name_plural = 'Участники'
 
     def __str__(self):
-        return self.name
+        return self.full_name
 
 
 class Speech(models.Model):
@@ -68,18 +68,6 @@ class Speech(models.Model):
 
 
 class Meetup(models.Model):
-    speeches = models.ManyToManyField(
-        Speech,
-        verbose_name='Доклады',
-        related_name='meetups',
-        on_delete=models.PROTECT
-    )
-    participant = models.ManyToManyField(
-        Speech,
-        verbose_name='Доклады',
-        related_name='meetups',
-        on_delete=models.SET_NULL
-    )
     name = models.CharField(
         verbose_name='Название',
         max_length=200,
@@ -93,6 +81,18 @@ class Meetup(models.Model):
         max_length=200,
         null=True,
         blank=True,
+    )
+    speeches = models.ManyToManyField(
+        Speech,
+        verbose_name='Доклады',
+        related_name='meetups',
+        on_delete=models.PROTECT
+    )
+    participant = models.ManyToManyField(
+        Speech,
+        verbose_name='Доклады',
+        related_name='meetups',
+        on_delete=models.SET_NULL
     )
 
     class Meta:
