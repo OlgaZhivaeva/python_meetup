@@ -144,7 +144,6 @@ class Speech(models.Model):
     class Meta:
         verbose_name = 'Доклад'
         verbose_name_plural = 'Доклады'
-        unique_together = ('meetup', 'ordinal_number')
         ordering = ['ordinal_number']
 
     def __str__(self):
