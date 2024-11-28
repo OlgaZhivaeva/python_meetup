@@ -1,46 +1,49 @@
 from django.contrib import admin
+from django.urls import reverse
+from django.utils.html import format_html
+from adminsortable2.admin import SortableAdminBase
+from adminsortable2.admin import SortableInlineAdminMixin
 
-from .models import Meetup, Speaker,Guest
+from .models import Meetup, Participant, Speech, Donation
 
-@admin.register(Speaker)
-class SpeakerAdmin(admin.ModelAdmin):
-    search_fields = [
-        'number',
-        'tg_id',
-        'name',
-        'topic',
-    ]
+
+class SpeechInline(SortableInlineAdminMixin, admin.TabularInline):
+    model = Speech
+    extra = 0
+
+
+@admin.register(Speech)
+class SpeechAdmin(admin.ModelAdmin):
     list_display = [
-        'number',
-        'tg_id',
-        'name',
+        'ordinal_number',
         'topic',
+        'speaker',
+        'time_limit',
+        'meetup'
     ]
-    ordering = ['number']
+    ordering = ['meetup', 'ordinal_number']
 
 
-@admin.register(Guest)
+@admin.register(Participant)
 class GuestAdmin(admin.ModelAdmin):
-    search_fields = [
-        'tg_id',
-        'name',
-        'filled_in',
-    ]
     list_display = [
         'tg_id',
-        'name',
-        'filled_in',
+        'full_name'
     ]
+
 
 @admin.register(Meetup)
-class MeetupAdmin(admin.ModelAdmin):
-    search_fields = [
-        'beginning',
-        'time_limit',
-        'address',
-    ]
+class MeetupAdmin(SortableAdminBase, admin.ModelAdmin):
     list_display = [
-        'beginning',
-        'time_limit',
-        'address',
+        'title',
+        'date',
+    ]
+    inlines = [SpeechInline, ]
+
+@admin.register(Donation)
+class DonationAdmin(admin.ModelAdmin):
+    list_display = [
+        'meetup',
+        'donor',
+        'amount'
     ]

@@ -3,30 +3,41 @@ from django.core.validators import MinValueValidator
 
 
 class Participant(models.Model):
-    tg_id = models.CharField(
+    tg_id = models.IntegerField(
         verbose_name='Телеграмм ID',
-        max_length=50,
         unique=True,
+        db_index=True,
     )
-    user_name = models.CharField(
-        verbose_name='Ник',
-        max_length=50,
+    tg_username = models.CharField(
+        verbose_name='Никнейм',
         unique=True,
+        max_length=50,
+        blank=True,
+        null=True,
+        db_index=True,
+    )
+    bio = models.TextField(
+        verbose_name='О себе',
+        blank=True,
+        null=True
+    )
+    stack = models.CharField(
+        verbose_name='Стек',
+        max_length=200,
+        blank=True,
+        null=True
     )
     full_name = models.CharField(
-        verbose_name='Имя',
+        verbose_name='Полное имя',
         max_length=100,
+        db_index=True,
     )
     filled_at = models.DateTimeField(
         verbose_name='Время заполнения',
         auto_now_add=True,
     )
-    stack = models.CharField(
-        verbose_name='Стек',
-        max_length=100,
-    )
-    communication = models.BooleanField(
-        verbose_name='Общение',
+    is_communicative = models.BooleanField(
+        verbose_name='Готов к общению',
         default=False,
     )
 
@@ -38,43 +49,15 @@ class Participant(models.Model):
         return self.full_name
 
 
-class Speech(models.Model):
-    speaker = models.ForeignKey(
-        Participant,
-        verbose_name='Имя',
-        on_delete=models.SET_NULL,
-    )
-    topic = models.CharField(
-        verbose_name='Тема выступления',
-        max_length=200,
-    )
-    ordinal = models.PositiveIntegerField(
-        unique=True,
-        null=True,
-        blank=True,
-    )
-    time_limit = models.PositiveIntegerField(
-        verbose_name='Время выступления',
-        unique=True,
-        validators=[MinValueValidator(10)],
-    )
-
-    class Meta:
-        verbose_name = 'Доклад'
-        verbose_name_plural = 'Доклады'
-
-    def __str__(self):
-        return self.topic
-
-
 class Meetup(models.Model):
-    name = models.CharField(
+    title = models.CharField(
         verbose_name='Название',
         max_length=200,
-        blank=True,
+        db_index=True,
     )
-    beginning = models.DateTimeField(
-        verbose_name='Начало',
+    date = models.DateTimeField(
+        verbose_name='Дата конференции',
+        db_index=True,
     )
     address = models.CharField(
         verbose_name='Адрес',
@@ -82,17 +65,10 @@ class Meetup(models.Model):
         null=True,
         blank=True,
     )
-    speeches = models.ManyToManyField(
-        Speech,
-        verbose_name='Доклады',
-        related_name='meetups',
-        on_delete=models.PROTECT
-    )
-    participant = models.ManyToManyField(
-        Speech,
-        verbose_name='Доклады',
-        related_name='meetups',
-        on_delete=models.SET_NULL
+    participants = models.ManyToManyField(
+        Participant,
+        verbose_name='Участники',
+        related_name='meetups'
     )
 
     class Meta:
@@ -100,4 +76,76 @@ class Meetup(models.Model):
         verbose_name_plural = 'Встречи'
 
     def __str__(self):
-        return self.name
+        return f'{self.title} {self.date}'
+
+
+class Donation(models.Model):
+    meetup = models.ForeignKey(
+        Meetup,
+        on_delete=models.CASCADE,
+        db_index=True,
+        verbose_name='Конференция'
+    )
+    donor = models.ForeignKey(
+        Participant,
+        on_delete=models.SET_NULL,
+        null=True,
+        db_index=True,
+        verbose_name='Донатор'
+    )
+    amount = models.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        verbose_name='Сумма'
+    )
+    timestamp = models.DateTimeField(
+        auto_now_add=True,
+        verbose_name='Время доната'
+    )
+
+    class Meta:
+        verbose_name = 'Пожертвование'
+        verbose_name_plural = 'Пожертвования'
+
+    def __str__(self):
+        return f"Донат от {self.donor} на {self.meetup.title}"
+
+
+class Speech(models.Model):
+    speaker = models.ForeignKey(
+        Participant,
+        verbose_name='Имя',
+        on_delete=models.SET_NULL,
+        null=True,
+        db_index=True
+    )
+    topic = models.CharField(
+        verbose_name='Тема выступления',
+        max_length=200,
+        db_index=True,
+    )
+    ordinal_number = models.PositiveIntegerField(
+        verbose_name='Порядковый номер',
+        null=True,
+        blank=True,
+    )
+    time_limit = models.PositiveIntegerField(
+        verbose_name='Время выступления',
+        validators=[MinValueValidator(10)],
+    )
+    meetup = models.ForeignKey(
+        Meetup,
+        related_name='speeches',
+        verbose_name='Конференция',
+        on_delete=models.CASCADE,
+        db_index=True
+    )
+
+    class Meta:
+        verbose_name = 'Доклад'
+        verbose_name_plural = 'Доклады'
+        unique_together = ('meetup', 'ordinal_number')
+        ordering = ['ordinal_number']
+
+    def __str__(self):
+        return f'{self.topic} {self.speaker.full_name}'
