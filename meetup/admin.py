@@ -37,6 +37,7 @@ class MeetupAdmin(SortableAdminBase, admin.ModelAdmin):
     list_display = [
         'title',
         'date',
+        'address',
     ]
     inlines = [SpeechInline, ]
 
