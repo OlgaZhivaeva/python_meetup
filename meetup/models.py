@@ -125,7 +125,7 @@ class Speech(models.Model):
         db_index=True,
     )
     ordinal_number = models.PositiveIntegerField(
-        verbose_name='Порядковый номер',
+        verbose_name='№ п/п',
         null=True,
         blank=True,
     )

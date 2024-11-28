@@ -21,6 +21,7 @@ class SpeechAdmin(admin.ModelAdmin):
         'time_limit',
         'meetup'
     ]
+    list_filter = ['meetup',]
     ordering = ['meetup', 'ordinal_number']
 
 
