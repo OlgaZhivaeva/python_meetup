@@ -41,8 +41,9 @@ class Participant(models.Model):
 class Speech(models.Model):
     speaker = models.ForeignKey(
         Participant,
-        verbose_name='Имя',
+        verbose_name='Спикер',
         on_delete=models.SET_NULL,
+        null=True,
     )
     topic = models.CharField(
         verbose_name='Тема выступления',
@@ -86,13 +87,11 @@ class Meetup(models.Model):
         Speech,
         verbose_name='Доклады',
         related_name='meetups',
-        on_delete=models.PROTECT
     )
     participant = models.ManyToManyField(
-        Speech,
-        verbose_name='Доклады',
+        Participant,
+        verbose_name='Участники',
         related_name='meetups',
-        on_delete=models.SET_NULL
     )
 
     class Meta:
