@@ -18,7 +18,7 @@ class Participant(models.Model):
         max_length=100,
     )
     filled_at = models.DateTimeField(
-        verbose_name='время заполнения',
+        verbose_name='Время заполнения',
         auto_now_add=True,
     )
     stak = models.CharField(
@@ -31,18 +31,18 @@ class Participant(models.Model):
     )
 
     class Meta:
-        verbose_name = 'гость'
-        verbose_name_plural = 'гости'
+        verbose_name = 'Участник'
+        verbose_name_plural = 'Участники'
 
     def __str__(self):
         return self.name
 
 
-class Speесн(models.Model):
+class Speech(models.Model):
     speaker = models.ForeignKey(
         Participant,
         verbose_name='Имя',
-        on_delete=models.CASCADE,
+        on_delete=models.SET_NULL,
     )
     topic = models.CharField(
         verbose_name='Тема выступления',
@@ -60,14 +60,26 @@ class Speесн(models.Model):
     )
 
     class Meta:
-        verbose_name = 'спикер'
-        verbose_name_plural = 'спикеры'
+        verbose_name = 'Доклад'
+        verbose_name_plural = 'Доклады'
 
     def __str__(self):
-        return self.speaker.full_name
+        return self.topic
 
 
 class Meetup(models.Model):
+    speeches = models.ManyToManyField(
+        Speech,
+        verbose_name='Доклады',
+        related_name='meetups',
+        on_delete=models.PROTECT
+    )
+    participant = models.ManyToManyField(
+        Speech,
+        verbose_name='Доклады',
+        related_name='meetups',
+        on_delete=models.SET_NULL
+    )
     name = models.CharField(
         verbose_name='Название',
         max_length=200,
@@ -84,8 +96,8 @@ class Meetup(models.Model):
     )
 
     class Meta:
-        verbose_name = 'встреча'
-        verbose_name_plural = 'встречи'
+        verbose_name = 'Встреча'
+        verbose_name_plural = 'Встречи'
 
     def __str__(self):
         return self.name
