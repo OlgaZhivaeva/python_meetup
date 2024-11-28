@@ -40,6 +40,7 @@ class MeetupAdmin(SortableAdminBase, admin.ModelAdmin):
     ]
     inlines = [SpeechInline, ]
 
+
 @admin.register(Donation)
 class DonationAdmin(admin.ModelAdmin):
     list_display = [
