@@ -2,7 +2,7 @@ from django.db import models
 from django.core.validators import MinValueValidator
 
 
-class Speaker(models.Model):
+class Guest(models.Model):
     tg_id = models.CharField(
         verbose_name='Телеграмм ID',
         max_length=50,
@@ -11,6 +11,38 @@ class Speaker(models.Model):
     name = models.CharField(
         verbose_name='Имя',
         max_length=100,
+    )
+    filled_in = models.DateTimeField(
+        verbose_name='время заполнения',
+        auto_now_add=True,
+    )
+    specialization = models.CharField(
+        verbose_name='Специализация',
+        max_length=100,
+    )
+    communication = models.BooleanField(
+        verbose_name='Общение',
+        default=False,
+    )
+
+    class Meta:
+        verbose_name = 'гость'
+        verbose_name_plural = 'гости'
+
+    def __str__(self):
+        return self.name
+
+
+class Speaker(models.Model):
+    tg_id = models.CharField(
+        verbose_name='Телеграмм ID',
+        max_length=50,
+        unique=True,
+    )
+    name = models.ForeignKey(
+        Guest,
+        verbose_name='Имя',
+        on_delete=models.CASCADE,
     )
     topic = models.CharField(
         verbose_name='Тема выступления',
@@ -21,6 +53,11 @@ class Speaker(models.Model):
         null=True,
         blank=True,
         validators=[MinValueValidator(1)]
+    )
+    time_limit = models.PositiveIntegerField(
+        verbose_name='Время выступления',
+        unique=True,
+        validators=[MinValueValidator(10)],
     )
 
     class Meta:
@@ -45,6 +82,14 @@ class Guest(models.Model):
         verbose_name='время заполнения',
         auto_now_add=True,
     )
+    specialization = models.CharField(
+        verbose_name='Специализация',
+        max_length=100,
+    )
+    communication = models.BooleanField(
+        verbose_name='Общение',
+        default=False,
+    )
 
     class Meta:
         verbose_name = 'гость'
@@ -62,11 +107,6 @@ class Meetup(models.Model):
     )
     beginning = models.DateTimeField(
         verbose_name='Начало',
-    )
-    time_limit = models.PositiveIntegerField(
-        verbose_name='Регламент',
-        unique=True,
-        validators=[MinValueValidator(10)],
     )
     address = models.CharField(
         verbose_name='Адрес',
