@@ -1,3 +1,5 @@
+import traceback
+from django.utils.timezone import make_aware
 from datetime import timedelta
 from django.contrib import admin
 from django.urls import reverse
@@ -13,11 +15,11 @@ class SpeechInline(SortableInlineAdminMixin, admin.TabularInline):
     fields = [
         'ordinal_number',
         'get_time',
+        'time_limit',
         'topic',
         'speaker',
-        'time_limit',
     ]
-    readonly_fields = ["get_time"]
+    readonly_fields = ['get_time',]
     extra = 0
 
     def get_time(self, obj):
@@ -25,6 +27,7 @@ class SpeechInline(SortableInlineAdminMixin, admin.TabularInline):
         for num in range(1, obj.ordinal_number):
             minutes = Speech.objects.get(meetup=obj.meetup, ordinal_number=num).time_limit
             date += timedelta(minutes=minutes)
+        date += timedelta(minutes=180)
         return date.time()
 
 
@@ -33,19 +36,21 @@ class SpeechAdmin(admin.ModelAdmin):
     list_display = [
         'ordinal_number',
         'get_time',
+        'time_limit',
         'topic',
         'speaker',
-        'time_limit',
-        'meetup'
+        'meetup',
     ]
     list_filter = ['meetup',]
     ordering = ['meetup', 'ordinal_number']
 
     def get_time(self, obj):
+
         date = obj.meetup.date
         for num in range(1, obj.ordinal_number):
             minutes = Speech.objects.get(meetup=obj.meetup, ordinal_number=num).time_limit
             date += timedelta(minutes=minutes)
+        date += timedelta(minutes=180)
         return date.time()
 
 
