@@ -1,4 +1,3 @@
-from datetime import timedelta
 from django.db import models
 from django.core.validators import MinValueValidator
 
@@ -17,29 +16,12 @@ class Participant(models.Model):
         null=True,
         db_index=True,
     )
-    bio = models.TextField(
-        verbose_name='О себе',
-        blank=True,
-        null=True
-    )
-    stack = models.CharField(
-        verbose_name='Стек',
-        max_length=200,
-        blank=True,
-        null=True
-    )
     full_name = models.CharField(
         verbose_name='Полное имя',
         max_length=100,
         db_index=True,
-    )
-    filled_at = models.DateTimeField(
-        verbose_name='Время заполнения',
-        auto_now_add=True,
-    )
-    is_communicative = models.BooleanField(
-        verbose_name='Готов к общению',
-        default=False,
+        null=True,
+        blank=True
     )
 
     class Meta:
@@ -47,7 +29,7 @@ class Participant(models.Model):
         verbose_name_plural = 'Участники'
 
     def __str__(self):
-        return self.full_name
+        return f"{self.full_name or self.tg_id and f'id {self.tg_id} имя отсутствует'}" # noqa
 
 
 class Meetup(models.Model):
@@ -80,19 +62,60 @@ class Meetup(models.Model):
         return f'{self.title} {self.date}'
 
 
+class Questionnaire(models.Model):
+    participant = models.ForeignKey(
+        Participant,
+        on_delete=models.CASCADE,
+        db_index=True,
+        verbose_name='Участник',
+        related_name='questionnaires'
+    )
+    meetup = models.ForeignKey(
+        Meetup,
+        on_delete=models.CASCADE,
+        db_index=True,
+        verbose_name='Конференция',
+        related_name='questionnaires'
+    )
+    bio = models.TextField(
+        verbose_name='О себе',
+        blank=True,
+        null=True
+    )
+    stack = models.CharField(
+        verbose_name='Стек',
+        max_length=200,
+        blank=True,
+        null=True
+    )
+    is_communicative = models.BooleanField(
+        verbose_name='Готов к общению',
+        default=False,
+    )
+
+    class Meta:
+        verbose_name = 'Анкета'
+        verbose_name_plural = 'Анкеты'
+
+    def __str__(self):
+        return f'{self.participant.tg_id} {self.participant.full_name}'
+
+
 class Donation(models.Model):
     meetup = models.ForeignKey(
         Meetup,
         on_delete=models.CASCADE,
         db_index=True,
-        verbose_name='Конференция'
+        verbose_name='Конференция',
+        related_name='donations'
     )
     donor = models.ForeignKey(
         Participant,
         on_delete=models.SET_NULL,
         null=True,
         db_index=True,
-        verbose_name='Донатор'
+        verbose_name='Донатор',
+        related_name='donations'
     )
     amount = models.DecimalField(
         max_digits=10,
@@ -116,6 +139,7 @@ class Speech(models.Model):
     speaker = models.ForeignKey(
         Participant,
         verbose_name='Имя',
+        related_name='speeches',
         on_delete=models.SET_NULL,
         null=True,
         db_index=True
@@ -146,7 +170,6 @@ class Speech(models.Model):
         verbose_name = 'Доклад'
         verbose_name_plural = 'Доклады'
         ordering = ['ordinal_number']
-
 
     def __str__(self):
         return f'{self.topic} {self.speaker.full_name}'

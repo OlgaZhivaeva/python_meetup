@@ -1,11 +1,9 @@
 from datetime import timedelta
 from django.contrib import admin
-from django.urls import reverse
-from django.utils.html import format_html
 from adminsortable2.admin import SortableAdminBase
 from adminsortable2.admin import SortableInlineAdminMixin
 
-from .models import Meetup, Participant, Speech, Donation
+from .models import Meetup, Participant, Speech, Donation, Questionnaire
 
 
 class SpeechInline(SortableInlineAdminMixin, admin.TabularInline):
@@ -17,7 +15,7 @@ class SpeechInline(SortableInlineAdminMixin, admin.TabularInline):
         'topic',
         'speaker',
     ]
-    readonly_fields = ['get_time',]
+    readonly_fields = ['get_time', ]
     extra = 0
 
     def get_time(self, obj):
@@ -39,7 +37,7 @@ class SpeechAdmin(admin.ModelAdmin):
         'speaker',
         'meetup',
     ]
-    list_filter = ['meetup',]
+    list_filter = ['meetup', ]
     ordering = ['meetup', 'ordinal_number']
 
     def get_time(self, obj):
@@ -57,12 +55,9 @@ class ParticipantAdmin(admin.ModelAdmin):
     list_display = [
         'tg_id',
         'tg_username',
-        'bio',
-        'stack',
-        'full_name',
-        'is_communicative',
+        'full_name'
     ]
-    list_filter = ['meetups',]
+    list_filter = ['meetups', ]
 
 
 @admin.register(Meetup)
@@ -82,3 +77,8 @@ class DonationAdmin(admin.ModelAdmin):
         'donor',
         'amount'
     ]
+
+
+@admin.register(Questionnaire)
+class QuestionnaireAdmin(admin.ModelAdmin):
+    pass

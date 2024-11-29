@@ -1,7 +1,7 @@
 from django.core.management.base import BaseCommand
 from django.db import transaction
 from django.utils.timezone import make_aware
-from meetup.models import Participant, Meetup, Donation, Speech
+from meetup.models import Participant, Meetup, Donation, Speech, Questionnaire
 from datetime import datetime, timedelta
 import random
 
@@ -63,10 +63,7 @@ class Command(BaseCommand):
                 participant = Participant.objects.create(
                     tg_id=i,
                     tg_username=f'user{i}',
-                    full_name=name,
-                    bio=f'Биография для {name}',
-                    stack=random.choice(TECHNOLOGIES),
-                    is_communicative=random.choice([True, False])
+                    full_name=name
                 )
                 participants.append(participant)
             meetups = []
@@ -88,6 +85,17 @@ class Command(BaseCommand):
                         ordinal_number=i,
                         time_limit=random.randint(30, 120),
                         meetup=meetup
+                    )
+                for participant in meetup_participants:
+                    is_communicative_temp = random.choice([True, False])
+                    if not is_communicative_temp:
+                        continue
+                    Questionnaire.objects.create(
+                        bio=f'Биография для {participant.full_name}',
+                        stack=random.choice(TECHNOLOGIES),
+                        is_communicative=is_communicative_temp,
+                        meetup=meetup,
+                        participant=participant
                     )
             for _ in range(30):
                 meetup = random.choice(meetups)
