@@ -56,8 +56,13 @@ class SpeechAdmin(admin.ModelAdmin):
 class ParticipantAdmin(admin.ModelAdmin):
     list_display = [
         'tg_id',
-        'full_name'
+        'tg_username',
+        'bio',
+        'stack',
+        'full_name',
+        'is_communicative',
     ]
+    list_filter = ['meetups',]
 
 
 @admin.register(Meetup)
