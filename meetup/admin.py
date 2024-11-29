@@ -13,11 +13,11 @@ class SpeechInline(SortableInlineAdminMixin, admin.TabularInline):
     fields = [
         'ordinal_number',
         'get_time',
+        'time_limit',
         'topic',
         'speaker',
-        'time_limit',
     ]
-    readonly_fields = ["get_time"]
+    readonly_fields = ['get_time',]
     extra = 0
 
     def get_time(self, obj):
@@ -25,7 +25,8 @@ class SpeechInline(SortableInlineAdminMixin, admin.TabularInline):
         for num in range(1, obj.ordinal_number):
             minutes = Speech.objects.get(meetup=obj.meetup, ordinal_number=num).time_limit
             date += timedelta(minutes=minutes)
-        return date.time()
+        date += timedelta(minutes=180)
+        return date.time().strftime("%H:%M")
 
 
 @admin.register(Speech)
@@ -33,20 +34,22 @@ class SpeechAdmin(admin.ModelAdmin):
     list_display = [
         'ordinal_number',
         'get_time',
+        'time_limit',
         'topic',
         'speaker',
-        'time_limit',
-        'meetup'
+        'meetup',
     ]
     list_filter = ['meetup',]
     ordering = ['meetup', 'ordinal_number']
 
     def get_time(self, obj):
+
         date = obj.meetup.date
         for num in range(1, obj.ordinal_number):
             minutes = Speech.objects.get(meetup=obj.meetup, ordinal_number=num).time_limit
             date += timedelta(minutes=minutes)
-        return date.time()
+        date += timedelta(minutes=180)
+        return date.time().strftime("%H:%M")
 
 
 @admin.register(Participant)
