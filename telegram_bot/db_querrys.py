@@ -16,6 +16,3 @@ def create_participant(id, first_name, last_name, username=None, phone_number=No
         phone_number=phone_number,
     )
     return id
-
-
-
