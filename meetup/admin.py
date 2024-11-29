@@ -1,3 +1,4 @@
+from datetime import timedelta
 from django.contrib import admin
 from django.urls import reverse
 from django.utils.html import format_html
@@ -16,6 +17,7 @@ class SpeechInline(SortableInlineAdminMixin, admin.TabularInline):
 class SpeechAdmin(admin.ModelAdmin):
     list_display = [
         'ordinal_number',
+        'get_time',
         'topic',
         'speaker',
         'time_limit',
@@ -23,6 +25,13 @@ class SpeechAdmin(admin.ModelAdmin):
     ]
     list_filter = ['meetup',]
     ordering = ['meetup', 'ordinal_number']
+
+    def get_time(self, obj):
+        date = obj.meetup.date
+        for num in range(1, obj.ordinal_number):
+            minutes = Speech.objects.get(meetup=obj.meetup, ordinal_number=num).time_limit
+            date += timedelta(minutes=minutes)
+        return date.time()
 
 
 @admin.register(Participant)
