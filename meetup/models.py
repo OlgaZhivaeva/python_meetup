@@ -1,3 +1,4 @@
+from datetime import timedelta
 from django.db import models
 from django.core.validators import MinValueValidator
 
@@ -145,6 +146,13 @@ class Speech(models.Model):
         verbose_name = 'Доклад'
         verbose_name_plural = 'Доклады'
         ordering = ['ordinal_number']
+
+    def get_time(self, obj):
+        date = obj.meetup.date
+        for num in range(1, obj.ordinal_number):
+            minutes = Speech.objects.get(meetup=obj.meetup, ordinal_number=num).time_limit
+            date += timedelta(minutes=minutes)
+        return date.time()
 
     def __str__(self):
         return f'{self.topic} {self.speaker.full_name}'
