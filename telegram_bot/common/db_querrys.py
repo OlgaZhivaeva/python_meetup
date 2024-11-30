@@ -17,7 +17,7 @@ def get_planning_speech(participant, meetup_id):
 
 
 def get_meetup(id):
-    return Meetup.objects.get(id__exact=id)
+    return Meetup.objects.prefetch_related("participants").get(id__exact=id)
 
 
 def get_actual_meetups():

@@ -94,7 +94,7 @@ def menu(update: Update, context: CallbackContext):
     is_speaker = bool(context.user_data["planning_speech"])
     speaker_button = [
         InlineKeyboardButton(
-            "Меню выступления", callback_data="speaker_menu"
+            "Начать выступление", callback_data="speech_begin_check"
         )
     ]
     # ===================  TO DO ===================
