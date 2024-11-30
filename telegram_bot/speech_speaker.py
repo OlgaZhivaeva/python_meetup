@@ -82,6 +82,7 @@ def finish_speech(update: Update, context: CallbackContext):
     context.bot_data["current_speaker"] = None
     context.bot_data["current_speaker_chat_id"] = None
 
+    speech_topic = context.user_data["planning_speech"].topic
     for participant in context.user_data["current_meetup"].participants.all():
         context.bot.send_message(
             text=f'Выступление "{speech_topic}" закончилось',
