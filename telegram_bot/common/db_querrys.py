@@ -1,19 +1,19 @@
-from meetup.models import Participant, Meetup, Speech
+from meetup.models import Meetup, Participant, Speech
+
 from .extra_funcs import (
-    get_datetime_now_with_inaccuracy_less
+    get_datetime_now_with_inaccuracy_greater,
+    get_datetime_now_with_inaccuracy_less,
 )
 
 
 # Получаем доклад на митапе. Если у юзера есть доклад, то он спикер.
 # Пока что не учитываем дубли.
-def get_planning_speech(user_id, meetup_id):
-    speech = Meetup.objects.get(
-        id=meetup_id
-    ).speeches.filter(speaker__tg_id=user_id)
-    if speech.exists():
-        return speech.first()
-    else:
-        return None
+def get_planning_speech(participant, meetup_id):
+    return (
+        Meetup.objects.get(id=meetup_id)
+        .speeches.filter(speaker=participant)
+        .first()
+    )
 
 
 def get_meetup(id):
@@ -21,8 +21,13 @@ def get_meetup(id):
 
 
 def get_actual_meetups():
-    datetime_now_with_inaccuracy = get_datetime_now_with_inaccuracy_less()
-    return Meetup.objects.filter(date__gt=datetime_now_with_inaccuracy)
+    datetime_now_with_inaccuracy_less = get_datetime_now_with_inaccuracy_less()
+    datetime_now_with_inaccuracy_greater = (
+        get_datetime_now_with_inaccuracy_greater()
+    )
+    return Meetup.objects.filter(
+        date__gt=datetime_now_with_inaccuracy_less
+    ).filter(date__lt=datetime_now_with_inaccuracy_greater)
 
 
 def check_participant(id):
@@ -34,9 +39,10 @@ def get_participant(id):
 
 
 def create_participant(id, first_name=None, last_name=None, username=None):
-    Participant.objects.create(
-        tg_id=id,
-        tg_username=username,
-        full_name=f"{first_name} {last_name}"
+    return Participant.objects.create(
+        tg_id=id, tg_username=username, full_name=f"{first_name} {last_name}"
     )
-    return id
+
+
+def add_participant_to_meetup(participant, meetup):
+    meetup.participants.add(participant)
