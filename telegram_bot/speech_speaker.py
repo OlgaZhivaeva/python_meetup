@@ -10,7 +10,7 @@ from telegram.ext import (
     Updater,
 )
 
-from .db_querrys import querries
+# from telegram_bot.common.db_querrys import check_participant
 
 
 def speaker_menu(update: Update, context: CallbackContext):
