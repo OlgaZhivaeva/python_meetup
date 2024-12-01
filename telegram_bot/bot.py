@@ -7,6 +7,7 @@ from telegram.ext import Updater, CallbackContext
 from .start import handlers_register as start
 from .speech_speaker import handlers_register as speaker
 from .comrad_search import handlers_register as comrad_search
+from .schedule import handlers_register as schedule
 
 from .start import start as restart
 
@@ -32,6 +33,7 @@ def main():
     updater.dispatcher = start(updater)
     updater.dispatcher = comrad_search(updater)
     updater.dispatcher = speaker(updater)
+    updater.dispatcher = schedule(updater)
     # updater.dispatcher.add_error_handler(error)
     updater.start_polling()
     updater.idle()
