@@ -30,7 +30,6 @@ def get_schedule(meetup):
     return "".join(schedule)
 
 
-
 def update_questionnaire(meetup, participant, full_name, stack, bio):
     Questionnaire.objects.update_or_create(
         participant=participant,
@@ -59,7 +58,7 @@ def get_unseen_questionnaire(participant_id, meetup_id, last_processed_id=None):
 
 # Заполнил-ли юзер анкету
 def check_questionnaire(participant, meetup_id):
-    return participant.questionnaires.filter(meetup__id__exact=meetup_id).first()
+    return participant and participant.questionnaires.filter(meetup__id__exact=meetup_id).first()
 
 
 # Есть-ли хоть одна анкета
