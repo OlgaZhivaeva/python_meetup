@@ -121,6 +121,7 @@ def menu(update: Update, context: CallbackContext):
 
 def handlers_register(updater: Updater):
     updater.dispatcher.add_handler(CommandHandler("start", start))
+    updater.dispatcher.add_handler(CommandHandler("menu", menu))
     updater.dispatcher.add_handler(
         CallbackQueryHandler(start, pattern="^start$")
     )

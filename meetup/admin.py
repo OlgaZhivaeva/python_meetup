@@ -27,7 +27,11 @@ class SpeechInline(SortableInlineAdminMixin, admin.TabularInline):
         for num in range(1, obj.ordinal_number):
             minutes = Speech.objects.get(meetup=obj.meetup, ordinal_number=num).time_limit
             date += timedelta(minutes=minutes)
-        return date.time().strftime("%H:%M")
+        if obj.ordinal_number == 1:
+            return f'{format(date,"%H:%M")} - {format(date + timedelta(minutes=obj.time_limit), "%H:%M")}'
+        return f'{format(date + timedelta(minutes=5),"%H:%M")} - {format(date + timedelta(minutes=obj.time_limit), "%H:%M")}'
+        
+    get_time.short_description = 'Слот'
 
 
 @admin.register(Participant)

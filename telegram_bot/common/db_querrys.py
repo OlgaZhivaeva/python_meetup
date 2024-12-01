@@ -37,8 +37,7 @@ def update_questionnaire(meetup, participant, full_name, stack, bio):
         meetup=meetup,
         defaults={
             'stack': stack,
-            'bio': bio,
-            'is_communicative': True
+            'bio': bio
         }
     )
     participant.full_name = full_name
