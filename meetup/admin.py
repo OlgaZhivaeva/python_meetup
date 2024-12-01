@@ -1,14 +1,11 @@
 from datetime import timedelta
 from django.contrib import admin
-from django.http import HttpResponseRedirect
 from django.shortcuts import render
-from django.urls import path
 
 from adminsortable2.admin import SortableAdminBase
 from adminsortable2.admin import SortableInlineAdminMixin
 
 from meetup.forms import MessageForm
-from telegram_bot.bot import send_messages_for_all
 
 from .models import Meetup, Participant, Speech, Donation, Questionnaire
 
@@ -30,29 +27,6 @@ class SpeechInline(SortableInlineAdminMixin, admin.TabularInline):
         for num in range(1, obj.ordinal_number):
             minutes = Speech.objects.get(meetup=obj.meetup, ordinal_number=num).time_limit
             date += timedelta(minutes=minutes)
-        date += timedelta(minutes=180)
-        return date.time().strftime("%H:%M")
-
-
-@admin.register(Speech)
-class SpeechAdmin(admin.ModelAdmin):
-    list_display = [
-        'ordinal_number',
-        'get_time',
-        'time_limit',
-        'topic',
-        'speaker',
-        'meetup',
-    ]
-    list_filter = ['meetup', ]
-    ordering = ['meetup', 'ordinal_number']
-
-    def get_time(self, obj):
-        date = obj.meetup.date
-        for num in range(1, obj.ordinal_number):
-            minutes = Speech.objects.get(meetup=obj.meetup, ordinal_number=num).time_limit
-            date += timedelta(minutes=minutes)
-        date += timedelta(minutes=180)
         return date.time().strftime("%H:%M")
 
 
@@ -67,7 +41,6 @@ class ParticipantAdmin(admin.ModelAdmin):
         participant_ids = [user.tg_id for user in queryset]
         return render(request, 'admin/send_message.html', {'form': form, 'queryset': participant_ids})
     show_form.short_description = 'Отправить сообщение'
-
 
 
 @admin.register(Meetup)

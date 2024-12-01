@@ -2,7 +2,6 @@ import datetime
 
 from meetup.models import Meetup, Participant, Questionnaire
 from .extra_funcs import (
-    get_datetime_now_with_inaccuracy_greater,
     get_datetime_now_with_inaccuracy_less,
 )
 
