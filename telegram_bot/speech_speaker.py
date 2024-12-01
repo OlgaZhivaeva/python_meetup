@@ -87,8 +87,9 @@ def begin_speech(update: Update, context: CallbackContext):
 
 
 def finish_speech(update: Update, context: CallbackContext):
-    # query = update.callback_query
-    # query.answer()
+    if not context.user_data.get("speech_time_message_id"):
+        return
+
     chat_id = update.effective_chat.id
     context.bot.unpin_chat_message(
         chat_id=chat_id,
