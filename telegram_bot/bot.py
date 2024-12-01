@@ -1,17 +1,16 @@
 import logging
 
 from django.conf import settings
-from telegram import Update, Bot
-from telegram.ext import Updater, CallbackContext
+from telegram import Bot, Update
+from telegram.ext import CallbackContext, Updater
 
-from .start import handlers_register as start
-from .speech_speaker import handlers_register as speaker
-from .speech_questions import handlers_register as questions
 from .comrad_search import handlers_register as comrad_search
+from .donate import handlers_register as donate
 from .schedule import handlers_register as schedule
-
+from .speech_questions import handlers_register as questions
+from .speech_speaker import handlers_register as speaker
+from .start import handlers_register as start
 from .start import start as restart
-
 
 TG_BOT_TOKEN = settings.TG_BOT_TOKEN
 
@@ -48,6 +47,7 @@ def main():
     updater.dispatcher = speaker(updater)
     updater.dispatcher = schedule(updater)
     updater.dispatcher = questions(updater)
+    updater.dispatcher = donate(updater)
     updater.dispatcher.add_error_handler(error)
     updater.start_polling()
     updater.idle()
