@@ -1,6 +1,5 @@
 from django.core.management.base import BaseCommand
 from django.db import transaction
-from django.utils.timezone import make_aware
 from meetup.models import Participant, Meetup, Donation, Speech, Questionnaire
 from datetime import datetime, timedelta
 import random
@@ -70,7 +69,7 @@ class Command(BaseCommand):
             for i, meetup in enumerate(MEETUPS):
                 meetup_db = Meetup.objects.create(
                     title=meetup.get('title'),
-                    date=make_aware(datetime.now()) + timedelta(days=i*7),
+                    date=datetime.now() + timedelta(days=i*7),
                     address=meetup.get('address')
                 )
                 meetups.append(meetup_db)
