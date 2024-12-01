@@ -48,6 +48,6 @@ def main():
     updater.dispatcher = speaker(updater)
     updater.dispatcher = schedule(updater)
     updater.dispatcher = questions(updater)
-    # updater.dispatcher.add_error_handler(error)
+    updater.dispatcher.add_error_handler(error)
     updater.start_polling()
     updater.idle()

@@ -2,6 +2,7 @@ from datetime import datetime
 
 from telegram import (
     InlineKeyboardButton,
+    InlineKeyboardMarkup,
     ReplyKeyboardMarkup,
     ReplyKeyboardRemove,
     Update,
@@ -74,13 +75,14 @@ def begin_speech(update: Update, context: CallbackContext):
         chat_id=speaker_chat_id, message_id=speech_time_message_id
     )
     context.user_data["speech_time_message_id"] = speech_time_message_id
-
+    button = [[InlineKeyboardButton("Задать вопрос", callback_data="speech_questions")]]
     for participant in context.user_data["current_meetup"].participants.all():
         if participant != context.user_data["participant"]:
             try:
                 context.bot.send_message(
                     text=f'Выступление "{speech_topic}" началось',
                     chat_id=participant.tg_id,
+                    reply_markup=InlineKeyboardMarkup(button),
                 )
             except error.BadRequest:
                 continue
