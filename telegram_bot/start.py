@@ -99,10 +99,9 @@ def menu(update: Update, context: CallbackContext):
             "Начать выступление", callback_data="speech_begin_check"
         )
     ]
-    # ===================  TO DO ===================
-    # question_button = [InlineKeyboardButton(
-    #     "Задать вопрос докладчику", callback_data="speech_questions"
-    # )]
+    question_button = [InlineKeyboardButton(
+         "Задать вопрос докладчику", callback_data="speech_questions"
+     )]
     buttons = [
         [InlineKeyboardButton("Расписание", callback_data="schedule")],
         [InlineKeyboardButton("Знакомства", callback_data="comrad_search")],
@@ -115,10 +114,8 @@ def menu(update: Update, context: CallbackContext):
     ]
     if is_speaker:
         buttons = [speaker_button] + buttons
-
-    # ===================  TO DO ===================
-    # if is_active_speaker:
-    #   buttons = [question_button] + buttons
+    if context.bot_data.get("current_speaker"):
+        buttons = [question_button] + buttons
     menu_message = f'Приветствуем!\n{meetup.title}\nДата: {format(meetup.date, "%c")}\nАдрес: {meetup.address}\n\nВыберите интересующий пункт меню'
     safe_send_message(update, menu_message, buttons)
 
