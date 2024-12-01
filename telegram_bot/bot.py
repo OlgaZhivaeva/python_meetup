@@ -25,7 +25,6 @@ logger = logging.getLogger(__name__)
 # Обработчик ошибок
 def error(update: Update, context: CallbackContext):
     try:
-        update.message.reply_text("Произошла ошибка. Возвращаемся на главную.")
         restart(update, context)
     except Exception as e:
         logger.error(f"Не получилось отловить ошибку: {e}")
