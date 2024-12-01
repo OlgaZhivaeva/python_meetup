@@ -1,7 +1,7 @@
 import logging
 
 from django.conf import settings
-from telegram import Update
+from telegram import Update, Bot
 from telegram.ext import Updater, CallbackContext
 
 from .start import handlers_register as start
@@ -11,6 +11,9 @@ from .comrad_search import handlers_register as comrad_search
 from .schedule import handlers_register as schedule
 
 from .start import start as restart
+
+
+TG_BOT_TOKEN = settings.TG_BOT_TOKEN
 
 
 logging.basicConfig(
@@ -29,8 +32,17 @@ def error(update: Update, context: CallbackContext):
         logger.error(f"Не получилось отловить ошибку: {e}")
 
 
+def send_messages_for_all(tg_ids, message='Привет'):
+    bot = Bot(token=TG_BOT_TOKEN)
+    for tg_id in tg_ids:
+        try:
+            bot.send_message(chat_id=tg_id, text=message)
+        except Exception:
+            pass
+
+
 def main():
-    updater = Updater(settings.TG_BOT_TOKEN, use_context=True)
+    updater = Updater(TG_BOT_TOKEN, use_context=True)
     updater.dispatcher = start(updater)
     updater.dispatcher = comrad_search(updater)
     updater.dispatcher = speaker(updater)
