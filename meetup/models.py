@@ -88,10 +88,6 @@ class Questionnaire(models.Model):
         blank=True,
         null=True
     )
-    is_communicative = models.BooleanField(
-        verbose_name='Готов к общению',
-        default=False,
-    )
 
     class Meta:
         verbose_name = 'Анкета'

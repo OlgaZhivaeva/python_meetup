@@ -79,9 +79,8 @@ def start(update: Update, context: CallbackContext):
 def show_meetups(update: Update, context: CallbackContext):
     query = update.callback_query
     query.answer()
-    if not context.user_data.get("meetup_id"):
-        context.user_data["meetup_id"] = query.data.split("_")[-1]
-    current_meetup = get_meetup(context.user_data["meetup_id"])
+    meetup_id = query.data.split("_")[-1]
+    current_meetup = get_meetup(meetup_id)
     context.user_data["current_meetup"] = current_meetup
     menu(update, context)
 
