@@ -23,10 +23,11 @@ def safe_send_message(update, message, buttons=None):
     query = update.callback_query
     if query:
         query.answer()
-        query.edit_message_text(
-            message,
-            reply_markup=buttons and InlineKeyboardMarkup(buttons) or None,
-        )
+        if query.message.text != message:
+            query.edit_message_text(
+                message,
+                reply_markup=buttons and InlineKeyboardMarkup(buttons) or None,
+            )
     else:
         update.message.reply_text(
             message,

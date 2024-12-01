@@ -1,3 +1,4 @@
+import time
 from telegram import (
     InlineKeyboardButton,
     Update,
@@ -35,7 +36,6 @@ def reg_user(update: Update, context: CallbackContext):
 
 # Старт бота. Выбираем актуальный митап.
 def start(update: Update, context: CallbackContext):
-    context.user_data.clear()
     context.user_data["guest_id"] = update.effective_chat.id
     if not check_participant(context.user_data["guest_id"]):
         context.user_data["participant"] = reg_user(update, context)
@@ -52,11 +52,13 @@ def start(update: Update, context: CallbackContext):
         only_one_meetup_message = f"""На данный момент доступен лишь один митап на выбор.
 "{current_meetup.title},  {format(current_meetup.date, '%B %d')}"
 Выбран автоматически."""
-        context.bot.send_message(
+        message = context.bot.send_message(
             text=only_one_meetup_message, chat_id=update.effective_chat.id
         )
         context.user_data["current_meetup"] = current_meetup
         menu(update, context)
+        time.sleep(1)
+        message.delete()
     else:
         buttons = [
             [
@@ -125,6 +127,9 @@ def handlers_register(updater: Updater):
     updater.dispatcher.add_handler(CommandHandler("start", start))
     updater.dispatcher.add_handler(
         CallbackQueryHandler(start, pattern="^start$")
+    )
+    updater.dispatcher.add_handler(
+        CallbackQueryHandler(menu, pattern="^menu$")
     )
     updater.dispatcher.add_handler(
         CallbackQueryHandler(reg_user, pattern="^reg_user$")

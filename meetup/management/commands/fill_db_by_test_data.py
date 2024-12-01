@@ -62,7 +62,7 @@ class Command(BaseCommand):
             for i, name in enumerate(FULL_NAMES, start=1):
                 participant = Participant.objects.create(
                     tg_id=i,
-                    tg_username=f'user{i}',
+                    tg_username=f'@user{i}',
                     full_name=name
                 )
                 participants.append(participant)
