@@ -93,7 +93,6 @@ class Command(BaseCommand):
                     Questionnaire.objects.create(
                         bio=f'Биография для {participant.full_name}',
                         stack=random.choice(TECHNOLOGIES),
-                        is_communicative=is_communicative_temp,
                         meetup=meetup,
                         participant=participant
                     )
