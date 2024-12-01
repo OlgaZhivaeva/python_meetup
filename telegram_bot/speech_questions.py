@@ -42,6 +42,11 @@ def send_question(update: Update, context: CallbackContext):
             text=question,
             chat_id=context.bot_data["current_speaker_chat_id"],
         )
+    chat_id = update.effective_chat.id
+    context.bot.send_message(
+        chat_id=chat_id,
+        text="Вопрос передан докладчику"
+        )
 
 
 def to_menu(update: Update, context: CallbackContext):
