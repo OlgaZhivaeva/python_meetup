@@ -64,6 +64,7 @@ class DonationAdmin(admin.ModelAdmin):
         'donor',
         'amount'
     ]
+    list_filter = ['meetup',]
 
 
 @admin.register(Questionnaire)

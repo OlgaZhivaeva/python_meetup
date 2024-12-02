@@ -60,6 +60,7 @@ def donate(update: Update, context: CallbackContext):
             LabeledPrice(label="Пожертвование", amount=int(invoice_amount))
         ],
     )
+    return ConversationHandler.END
 
 
 def precheckout(update: Update, context: CallbackContext):
@@ -72,6 +73,7 @@ def pay_success(update: Update, context: CallbackContext):
     meetup = context.user_data["current_meetup"]
     donor = context.user_data["participant"]
     create_donation(meetup, donor, amount)
+    return ConversationHandler.END
 
 
 def to_menu(update: Update, context: CallbackContext):
@@ -88,11 +90,13 @@ def handlers_register(updater: Updater):
             states={
                 "DONATE": [
                     MessageHandler(Filters.text & ~Filters.command, donate),
-                    MessageHandler(Filters.successful_payment, pay_success),
                 ]
             },
             fallbacks=[CallbackQueryHandler(to_menu, pattern="^to_menu$")],
         )
     )
     updater.dispatcher.add_handler(PreCheckoutQueryHandler(precheckout))
+    updater.dispatcher.add_handler(
+        MessageHandler(Filters.successful_payment, pay_success)
+    )
     return updater.dispatcher
