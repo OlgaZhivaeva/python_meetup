@@ -17,11 +17,16 @@ source venv/bin/activate
 ```commandline
 pip install -r requirements.txt
 ```
+Создайте телеграмм бота у [@BotFather](https://t.me/BotFather) и получите токен телеграмм бота
+и токен для подключения платежей [см инструкцию](https://info.paymaster.ru/blog/kak-nastroit-platezhi-cherez-bota-v-telegram/)
+
 В каталоге проекта создайте файл `.env` и поместите в него переменные окружения
 ```commandline
 TG_BOT_TOKEN=ваш токен телеграмм бота
 SECRET_KEY=ваш секретный ключ джанго проекта
 DEBUG=True или False
+ALLOWED_HOSTS=имена хостов/доменов
+PAYMENT_TOKEN=PAYMENT_TOKEN вашего бота
 ```
 
 Создайте файл базы данных и сразу примените все миграции командой
@@ -43,10 +48,6 @@ python3 manage.py runserver
 ```python
 python3 manage.py run_bot
 ```
-
-### Примеры работы
-
-
 
 ### Цель проекта
 
