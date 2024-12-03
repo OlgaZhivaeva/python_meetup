@@ -1,3 +1,4 @@
+import os
 import locale
 from pathlib import Path
 
@@ -92,6 +93,6 @@ USE_L10N = True
 USE_TZ = False
 
 STATIC_URL = "/static/"
-STATIC_ROOT = BASE_DIR / "static/"
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
