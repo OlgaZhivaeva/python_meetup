@@ -48,6 +48,11 @@ python3 manage.py runserver
 ```python
 python3 manage.py run_bot
 ```
+Создайте администратора базы данных командой
+```python
+python3 manage.py createsuperuser
+```
+Откройте панель администрaтора Django по адресу [https://127.0.0.1:8000/admin](https://127.0.0.1:8000/admin)
 
 ### Цель проекта
 
